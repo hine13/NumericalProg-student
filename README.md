@@ -2,9 +2,15 @@
 
 ---
 
+<<<<<<< HEAD
 Author:  Si-Young Lee
 
 Date:  Updated 2021-10-03
+=======
+Author:  Young-Keun Kim
+
+Date:  Updated 2021-10-8
+>>>>>>> 904319a6a1f818a5df49b429e4584bca8719d98f
 
 Lecture: Numerical Programming by Young-Keun Kim, Handong Global University 
 
