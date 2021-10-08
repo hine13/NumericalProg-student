@@ -2,9 +2,9 @@
 
 ---
 
-Author:  Your Name
+Author:  Si-Young Lee
 
-Date:  Updated 2021-8-31
+Date:  Updated 2021-10-03
 
 Lecture: Numerical Programming by Young-Keun Kim, Handong Global University 
 
