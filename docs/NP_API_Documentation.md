@@ -258,6 +258,29 @@ void gradientFunc(double func(const double x), double x[], double dydx[], int m)
 
 ### integral\(\)
 
+Integral using trapezoidal Method.
+
+**Parameters**
+
+* **x\[\]**: input data vector **x** in 1D-array .
+* **y\[\]**: input data vector **y** in 1D-array.
+* **m**: The number associated with the number of for statements.
+
+**Example code**
+
+```c
+double trapz(double x[], double y[], int m) {
+	int N = m - 1;
+	double I = 0;
+	for (int i = 0; i < N; i++) {
+		I += (y[i] + y[i + 1]) * (x[i + 1] - x[i]);
+	}
+	return I * 0.5;
+}
+```
+
+
+
 Integral using Simpson 1/3 Method.
 
 ```text
@@ -289,6 +312,8 @@ double integral38(double func(const double x), double a, double b, int n) {
 
 
 
+Integral using Simpson 3/8 Method.
+
 **Example code**
 
 ```c
@@ -303,8 +328,6 @@ double integral(double func(const double x), double a, double b, int n) {
 	return I * h / 3;
 }
 ```
-
-Integral using Simpson 3/8 Method.
 
 **Parameters**
 
