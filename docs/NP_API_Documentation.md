@@ -7,6 +7,48 @@ description: Numerical Method example
 
 `#include "myNM.h"`
 
+
+
+# SinTaylor
+
+Create a simple function that returns the output of sine x.
+
+```c
+double sinTaylor(double _x)
+```
+
+**parameters**
+
+* 
+
+**Example code**
+
+```c
+double sinTaylor(double _x)
+{
+	int N_max = 20;
+	double epsilon = 1e-5;
+
+	double S_N = 0, S_N_prev = 0, rel_chg = 0;
+	int N = 0;
+
+	do {
+		N++;
+		S_N_prev = S_N;
+		S_N = 0;
+		for (int k = 0; k < N; k++)
+			S_N += pow(-1, k) * pow(_x, 2 * k + 1) / factorial(2 * k + 1);
+
+		rel_chg = fabs((S_N - S_N_prev) / S_N_prev);
+
+	} while (N < N_max && rel_chg >= epsilon);
+
+	return S_N;
+}
+```
+
+
+
 ## Non-Linear Solver
 
 ### newtonRaphson\(\)
