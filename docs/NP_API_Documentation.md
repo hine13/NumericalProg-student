@@ -251,11 +251,8 @@ void gradientFunc(double func(const double x), double x[], double dydx[], int m)
 
 	free(y);
 }
+
 ```
-
-
-
-Solve for numerical g
 
 ## Integration
 
@@ -269,20 +266,52 @@ double integral(double func(const double _x), double a, double b, int n);
 
 **Parameters**
 
+* **func(const double x)** : A small function that goes into a function.
+* **x\[\]**: input data vector **x** in 1D-array .
+* **y\[\]**: input data vector **y** in 1D-array.
+* **dydx\[\]**: output vector **dydx** in 1D-array.
+* **m**:  length **x** and **y**.
+
+**code**
+
+```c
+double integral38(double func(const double x), double a, double b, int n) {
+	double h = (b - a) / n;
+	double I = func(a) + 2 * func(b - h) + func(b);
+	for (int i = 2; i <= n - 1; i += 3)
+	{
+		double xi = a + i * h;
+		I += 5 * func(xi) + 3 * func(xi + h);
+	}
+	return I * h * 3 / 8;
+}
+```
+
+
+
+**Example code**
+
+```c
+double integral(double func(const double x), double a, double b, int n) {
+	double h = (b - a) / n;
+	double I = func(a) + 4 * func(b - h) + func(b);
+	for (int i = 1; i < n - 2; i += 2)
+	{
+		double xi = a + i * h;
+		I += 4 * func(xi) + 2 * func(xi + h);
+	}
+	return I * h / 3;
+}
+```
+
+Integral using Simpson 3/8 Method.
+
+**Parameters**
+
 * **func**: Function **func** is defined.
 * **a** is starting point of x.
 * **b** is ending point of x.
 * **n** is the length between **a** and **b**
-
-**Example code**
-
-```text
-double I_simpson13 = integral(myFunc, -1, 1, 12);
-
-double myFunc(const double _x) {
-	return sqrt(1 - (_x * _x));
-}
-```
 
 ## ODE-IVP
 
