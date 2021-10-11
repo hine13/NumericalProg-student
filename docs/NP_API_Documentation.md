@@ -298,6 +298,32 @@ double integral(double func(const double _x), double a, double b, int n);
 **code**
 
 ```c
+double integral(double func(const double x), double a, double b, int n) {
+	double h = (b - a) / n;
+	double I = func(a) + 4 * func(b - h) + func(b);
+	for (int i = 1; i < n - 2; i += 2)
+	{
+		double xi = a + i * h;
+		I += 4 * func(xi) + 2 * func(xi + h);
+	}
+	return I * h / 3;
+}
+```
+
+
+
+Integral using Simpson 3/8 Method.
+
+**Parameters**
+
+* **func**: Function **func** is defined.
+* **a** is starting point of x.
+* **b** is ending point of x.
+* **n** is the length between **a** and **b**
+
+**Example code**
+
+```c
 double integral38(double func(const double x), double a, double b, int n) {
 	double h = (b - a) / n;
 	double I = func(a) + 2 * func(b - h) + func(b);
@@ -311,32 +337,6 @@ double integral38(double func(const double x), double a, double b, int n) {
 ```
 
 
-
-Integral using Simpson 3/8 Method.
-
-**Example code**
-
-```c
-double integral(double func(const double x), double a, double b, int n) {
-	double h = (b - a) / n;
-	double I = func(a) + 4 * func(b - h) + func(b);
-	for (int i = 1; i < n - 2; i += 2)
-	{
-		double xi = a + i * h;
-		I += 4 * func(xi) + 2 * func(xi + h);
-	}
-	return I * h / 3;
-}
-```
-
-**Parameters**
-
-* **func**: Function **func** is defined.
-* **a** is starting point of x.
-* **b** is ending point of x.
-* **n** is the length between **a** and **b**
-
-## ODE-IVP
 
 ### odeEU\(\)
 
@@ -353,28 +353,183 @@ void odeEU(double func(const double x, const double y), double y[], double t0, d
 * **t0** is starting point.
 * **tf** is ending point.
 * **h** is length of step.
-* **y0** is initial value of **y\[\]**.
 
 **Example code**
 
-```text
-double a = 0;
-double b = 0.1;
-double h = 0.001;
-double y_EU[200] = { 0 };
-double v0 = 0;
+```c
+void odeEU(double myfunc(const double t, const double y), double y[], double t0, double tf, double h)
+{
+	double* t;
+	t = (double*)malloc(sizeof(double));
+	y[0] = 0;
+	t[0] = 0;
+	int N = (tf - t0) / h;
+	printf("odeEU\n");
+	for (int i = 0; i < N; i++) {
+		double slope = myfunc(t[i], y[i]);
+		t[i + 1] = t[i] + h;
+		y[i + 1] = y[i] + slope * h;
+		printf("%f\n", y[i]);
+	}
 
-odeEU(odeFunc_rc, y_EU, a, b, h, v0);
-
-double odeFunc_rc(const double t, const double v) {
-	double tau = 1;
-	double T = 1 / tau;
-	double f = 10;
-	double Vm = 1;
-	double omega = 2 * PI * f;
-	return  -T * v + T * Vm * cos(omega * t);
+	free(t);
 }
 ```
+
+Solve the 1st-order ODE using Euler's modified Method.
+
+**Parameters**
+
+* **func**: Function **func** is defined.
+* **y\[\]**: Solution of ODE in structure 1D-array form.
+* **t0** is starting point.
+* **tf** is ending point.
+* **h** is length of step.
+
+**Example code**
+
+```c
+void odeEM(double myfunc(const double t, const double y), double y[], double t0, double tf, double h) {
+	double* t;
+	t = (double*)malloc(sizeof(double));
+	y[0] = 0;
+	t[0] = 0;
+	int N = (tf - t0) / h;
+	printf("odeEM\n");
+	for (int i = 0; i < N; i++) {
+		double slope1 = myfunc(t[i], y[i]);
+		t[i + 1] = t[i] + h;
+		y[i + 1] = y[i] + slope1 * h;
+		double slope2 = myfunc(t[i + 1], y[i + 1]);
+		y[i + 1] = y[i] + (myfunc(t[i], y[i]) + myfunc(t[i + 1], y[i + 1])) * h / 2.0;
+		printf("%f\n", y[i]);
+	}
+
+	free(t);
+
+}
+```
+
+Solve the 1st-order ODE using Runge-Kutta second order Method.
+
+**Parameters**
+
+* **func**: Function **func** is defined.
+* **y\[\]**: Solution of ODE in structure 1D-array form.
+* **t0** is starting point.
+* **tf** is ending point.
+* **h** is length of step.
+
+**Example code**
+
+```c
+void odeRK2(double myfunc(const double t, const double y), double y[], double t0, double tf, double h)
+{
+	double* t;
+	double c1 = 0.5;
+	double c2 = 0.5;
+	double a2 = 1.0;
+	double b21 = 1.0;
+	t = (double*)malloc(sizeof(double));
+	y[0] = 0;
+	t[0] = 0;
+	int N = (tf - t0) / h;
+	printf("odeRK2\n");
+	for (int i = 0; i < N; i++) {
+		double K1 = myfunc(t[i], y[i]);
+		t[i + 1] = t[i] + h;
+		double K2 = myfunc(t[i] + a2 * h, y[i] + (K1 * h) * b21);
+		y[i + 1] = y[i] + ((c1 * K1 + c2 * K2) * h);
+		printf("%f\n", y[i]);
+	}
+
+
+
+	free(t);
+
+}
+```
+
+Solve the 1st-order ODE using Runge-Kutta third order Method.
+
+**Parameters**
+
+* **func**: Function **func** is defined.
+* **y\[\]**: Solution of ODE in structure 1D-array form.
+* **t0** is starting point.
+* **tf** is ending point.
+* **h** is length of step.
+
+**Example code**
+
+```c
+void odeRK3(double myfunc(const double t, const double y), double y[], double t0, double tf, double h)
+{
+	double* t;
+	double c1 = 1.0 / 6.0;
+	double c2 = 4.0 / 6.0;
+	double c3 = 1.0 / 6.0;
+	double a2 = 0.5;
+	double a3 = 1.0;
+	double b21 = 0.5;
+	double b31 = -1.0;
+	double b32 = 2.0;
+	t = (double*)malloc(sizeof(double));
+	y[0] = 0;
+	t[0] = 0;
+	int N = (tf - t0) / h;
+	printf("odeRK3\n");
+	for (int i = 0; i < N; i++) {
+		double K1 = myfunc(t[i], y[i]);
+		t[i + 1] = t[i] + h;
+		double K2 = myfunc(t[i] + h * a2, y[i] + (K1 * h) * b21);
+		double K3 = myfunc(t[i] + a3 * h, y[i] + b31 * K1 * h + b32 * K2 * h);
+		y[i + 1] = y[i] + ((K1 + 4 * K2 + K3) * h) / 6.0;
+		printf("%f\n", y[i]);
+	}
+
+
+
+	free(t);
+
+}
+```
+
+ Also, create a function that calls different ODE method
+
+**Parameters**
+
+* **func**: Function **func** is defined.
+* **y\[\]**: Solution of ODE in structure 1D-array form.
+* **t0** is starting point.
+* **tf** is ending point.
+* **h** is length of step.
+* **method**: choose method
+
+**Example code**
+
+```c
+void ode(double myfunc(const double t, const double y), double y[], double t0, double tf, double h, int method) {
+	switch (method)
+	{
+	case 0:
+		odeEM(myfunc, y, t0, tf, h);
+		break;
+	case 1:
+		odeEU(myfunc, y, t0, tf, h);
+		break;
+	case 2:
+		odeRK2(myfunc, y, t0, tf, h);
+		break;
+	case 3:
+		odeRK3(myfunc, y, t0, tf, h);
+		break;
+	}
+
+}
+```
+
+
 
 -------------------------------------------------------------------------------------------------------
 
