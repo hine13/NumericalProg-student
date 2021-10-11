@@ -19,7 +19,9 @@ double sinTaylor(double _x)
 
 **parameters**
 
-* 
+* **N_max**, **epsilon** : related with stop condition
+* **S_N_prev** : previous S_N
+* **N** : The number associated with the number of for statements.
 
 **Example code**
 
@@ -38,6 +40,59 @@ double sinTaylor(double _x)
 		S_N = 0;
 		for (int k = 0; k < N; k++)
 			S_N += pow(-1, k) * pow(_x, 2 * k + 1) / factorial(2 * k + 1);
+
+		rel_chg = fabs((S_N - S_N_prev) / S_N_prev);
+
+	} while (N < N_max && rel_chg >= epsilon);
+
+	return S_N;
+}
+```
+
+```c
+double sinTaylor2(double _x)
+```
+
+**parameters**
+
+* **N_max**, **epsilon** : related with stop condition
+* **S_N_prev** : previous S_N
+* **N** : The number associated with the number of for statements.
+
+**Example code**
+
+```c
+double sinTaylor2(double _x)
+{
+	int N_max = 20;
+	double epsilon = 1e-5;
+
+	double S_N = 0, S_N_prev = 0, rel_chg = 0;
+	int N = 0;
+
+	do {
+		N++;
+		S_N_prev = S_N;
+		S_N = 0;
+		for (int k = 0; k < N; k++)
+		{
+			//  (-1)^n			
+			int sign_part = 1;
+			for (int i = 1; i <= k; i++)   //sign_part *= -1;
+				sign_part *= -1;
+
+			//  (x)^n			
+			double pow_part = 1;
+			for (int i = 1; i <= 2 * k + 1; i++)  //pow_part *= _x * _x;
+				pow_part *= _x;
+
+			// Factorial
+			double fac_part = 1;
+			for (int i = 1; i <= 2 * k + 1; i++)
+				fac_part *= i;
+
+			S_N += sign_part * pow_part / fac_part;
+		}
 
 		rel_chg = fabs((S_N - S_N_prev) / S_N_prev);
 
@@ -143,18 +198,64 @@ void gradient1D(double x[], double y[], double dydx[], int m);
 * **dydx\[\]**: output vector **dydx** in 1D-array.
 * **m**:  length **x** and **y**.
 
-**Example code**
+**code**
 
 ```cpp
-double x[21];
-    for (int i = 0; i < 21; i++) {
-        x[i] = 0.2 * i;
-    }
-double y[] = { -5.87, -4.23, -2.55, -0.89, 0.67, 2.09, 3.31, 4.31, 5.06, 5.55, 5.78, 5.77, 5.52, 5.08, 4.46, 3.72, 2.88, 2.00, 1.10, 0.23, -0.59 };
-double dydx[21];
+void gradient1D(double x[], double y[], double dydx[], int m) {
+	double h = x[1] - x[0];
 
-gradient1D(x, y, dydx, 21);
+	if (sizeof(x) != sizeof(y)) {
+		printf("ERROR: length of x and y must be equal\n");
+		return;
+	}
+
+	// three-Point FWD  O(h)
+	// Modify to Three-Point FWD  O(h^2)
+	dydx[0] = (-3 * y[0] + 4 * y[1] - y[2]) / (2 * h);
+
+	// Two-Point Central  O(h^2)
+	for (int i = 1; i < m - 1; i++) {
+		dydx[i] = (y[i + 1] - y[i - 1]) / (2 * h);
+	}
+
+	// Two-Point BWD  O(h)
+	// Modify to Three-Point BWD  O(h^2)
+	dydx[m - 1] = (3 * y[m - 1] - 4 * y[m - 2] + y[m - 3]) / (2 * h);
 ```
+
+### gradientfunc\(\)
+
+How can you use ‘myFunc()’ in the function of ‘gradientFunc()’?
+
+**Parameters**
+
+* **func(const double x)** : A small function that goes into a function.
+* **x\[\]**: input data vector **x** in 1D-array .
+* **y\[\]**: input data vector **y** in 1D-array.
+* **dydx\[\]**: output vector **dydx** in 1D-array.
+* **m**:  length **x** and **y**.
+
+**code**
+
+```c
+void gradientFunc(double func(const double x), double x[], double dydx[], int m) {
+	double* y;
+
+	y = (double*)malloc(sizeof(double) * m);
+	for (int i = 0; i < m; i++) {
+		y[i] = func(x[i]);
+	}
+
+	//printVec(y, m);
+	gradient1D(x, y, dydx, m);
+
+	free(y);
+}
+```
+
+
+
+Solve for numerical g
 
 ## Integration
 
