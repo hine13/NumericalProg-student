@@ -256,6 +256,31 @@ void gradientFunc(double func(const double x), double x[], double dydx[], int m)
 
 ## Integration
 
+### rectangularRect()
+
+Integral using rectangular Method.
+
+**Parameters**
+
+* **x\[\]**: input data vector **x** in 1D-array .
+* **y\[\]**: input data vector **y** in 1D-array.
+* **m**: The number associated with the number of for statements.
+
+**Example code**
+
+```c
+double IntegrateRect(double x[], double y[], int m) {
+	int N = m - 1;
+	double I = 0;
+	for (int i = 0; i < N; i++)
+		I += y[i] * (x[i + 1] - x[i]);
+
+	return I;
+}
+```
+
+
+
 ### integral\(\)
 
 Integral using trapezoidal Method.
