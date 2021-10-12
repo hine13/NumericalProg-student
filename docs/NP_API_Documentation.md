@@ -437,6 +437,8 @@ void odeEM(double myfunc(const double t, const double y), double y[], double t0,
 }
 ```
 
+#  odeRK2\(\)
+
 Solve the 1st-order ODE using Runge-Kutta second order Method.
 
 **Parameters**
@@ -476,6 +478,8 @@ void odeRK2(double myfunc(const double t, const double y), double y[], double t0
 
 }
 ```
+
+# odeRK3
 
 Solve the 1st-order ODE using Runge-Kutta third order Method.
 
@@ -522,7 +526,9 @@ void odeRK3(double myfunc(const double t, const double y), double y[], double t0
 }
 ```
 
- Also, create a function that calls different ODE method
+ # ode 
+
+Also, create a function that calls different ODE method
 
 **Parameters**
 
@@ -556,7 +562,55 @@ void ode(double myfunc(const double t, const double y), double y[], double t0, d
 }
 ```
 
+ # ode part2
 
+Also, create a function that calls different ODE method
+
+**Parameters**
+
+* **myfunc1,2**: Function **func** is defined.
+* **t0** is starting point.
+* **tf** is ending point.
+* **h** is length of step.
+* **y1_init**: y[0]
+* **y2_init**: z[0]
+
+**Example code**
+
+```c
+void sys2RK2(double myfunc1(const double t, const double y, double z), double myfunc2(const double t, const double y, double z), double t0, double tf, double h, double y1_init, double y2_init) {
+	double N = (tf - t0) / h;
+	double* t;
+	t = (double*)malloc(sizeof(double)*N);
+	double* y;
+	y = (double*)malloc(sizeof(double) * N);
+	double* z;
+	z = (double*)malloc(sizeof(double) * N);
+	y[0] = y1_init;
+	z[0] = y2_init;
+	t[0] = t0;
+	
+	printf("t[0]  %f  %f  %f\n", t[0], y[0], z[0]);
+
+	for (int i = 0; i < N+1; i++) {
+		t[i + 1] = t[i] + h;
+
+		double ky1 = myfunc1(t[i], y[i], z[i]);
+		double kz1 = myfunc2(t[i], y[i], z[i]);
+		double ky2 = myfunc1(t[i] + h, y[i] + ky1 * h, z[i] + kz1 * h);
+		double kz2 = myfunc2(t[i] + h, y[i] + ky1 * h, z[i] + kz1 * h);
+
+		y[i + 1] = y[i] + h * (ky1 + ky2) / 2.0;
+		z[i + 1] = z[i] + h * (kz1 + kz2) / 2.0;
+		
+		printf("t[%d]  %f  %f  %f\n", i, t[i], y[i], z[i]);
+
+	}
+	free(t);
+	free(y);
+	free(z);
+}
+```
 
 -------------------------------------------------------------------------------------------------------
 
