@@ -326,11 +326,11 @@ Integral using Simpson 3/8 Method.
 ```c
 double integral38(double func(const double x), double a, double b, int n) {
 	double h = (b - a) / n;
-	double I = func(a) + 2 * func(b - h) + func(b);
-	for (int i = 2; i <= n - 1; i += 3)
+	double I = func(a) + 3 * func(b - h) + 3 * func(b - 2 * h) + func(b);
+	for (int i = 1; i < n - 4; i += 3)
 	{
 		double xi = a + i * h;
-		I += 5 * func(xi) + 3 * func(xi + h);
+		I += 3 * func(xi) + 3 * func(xi + h) + 2 * func(xi + 2 * h);
 	}
 	return I * h * 3 / 8;
 }
@@ -375,6 +375,8 @@ void odeEU(double myfunc(const double t, const double y), double y[], double t0,
 	free(t);
 }
 ```
+
+## odeEM\(\)
 
 Solve the 1st-order ODE using Euler's modified Method.
 
