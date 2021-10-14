@@ -592,7 +592,7 @@ void sys2RK2(double myfunc1(const double t, const double y, double z), double my
 	
 	printf("t[0]  %f  %f  %f\n", t[0], y[0], z[0]);
 
-	for (int i = 0; i < N+1; i++) {
+	for (int i = 1; i < N; i++) {
 		t[i + 1] = t[i] + h;
 
 		double ky1 = myfunc1(t[i], y[i], z[i]);
